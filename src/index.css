@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════
    SMART ECOBIN — Global Styles
-   Aesthetic: Industrial Futurism
+   Aesthetic: Modern Clean UI
+   SMKN 13 Bandung Theme
    ═══════════════════════════════════════════ */
 
 *, *::before, *::after {
@@ -10,35 +11,58 @@
 }
 
 :root {
-  /* Core palette */
-  --bg:          #080c0b;
-  --bg2:         #0d1410;
-  --surface:     #111a17;
-  --surface2:    #162019;
-  --border:      #1d2e28;
-  --border2:     #243830;
+  /* Core palette — SMKN 13 Bandung */
+  --bg:          #0f1117;
+  --bg2:         #161820;
+  --surface:     #1c1e28;
+  --surface2:    #252836;
+  --surface3:    #2d3044;
+  --border:      #2e3148;
+  --border2:     #3d4160;
 
-  /* Accent per kategori */
-  --organik:        #1aff8c;
-  --organik-dim:    #0d8048;
-  --organik-glow:   rgba(26, 255, 140, 0.15);
+  /* Organik: Gold/Yellow from the logo */
+  --organik:        #F5C518;
+  --organik-dim:    #8c7010;
+  --organik-glow:   rgba(245, 197, 24, 0.12);
 
-  --anorganik:      #38c8ff;
-  --anorganik-dim:  #1a6e8c;
-  --anorganik-glow: rgba(56, 200, 255, 0.15);
+  /* Anorganik: Crimson/Maroon from the logo */
+  --anorganik:      #E04458;
+  --anorganik-dim:  #8c1f2e;
+  --anorganik-glow: rgba(224, 68, 88, 0.12);
 
-  --b3:             #ffb830;
-  --b3-dim:         #8c6418;
-  --b3-glow:        rgba(255, 184, 48, 0.15);
+  /* B3 */
+  --b3:             #FF9F1C;
+  --b3-dim:         #8c5810;
+  --b3-glow:        rgba(255, 159, 28, 0.12);
 
-  --danger:         #ff4444;
-  --muted:          #3d5c52;
-  --text:           #c8e0d8;
-  --text-dim:       #5a7a6e;
+  --danger:         #E04458;
+  --success:        #34D399;
+  --muted:          #4a4e69;
+  --text:           #e8e6f0;
+  --text-dim:       #8b8da3;
+  --text-muted:     #6b6d83;
+
+  /* Brand from logo */
+  --brand-red:      #9B1B30;
+  --brand-gold:     #F5C518;
+  --brand-charcoal: #3A3A3C;
 
   /* Typography */
-  --font-display: 'Syne', sans-serif;
-  --font-mono:    'DM Mono', monospace;
+  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow-gold: 0 0 30px rgba(245, 197, 24, 0.1);
+  --shadow-glow-red: 0 0 30px rgba(224, 68, 88, 0.1);
 }
 
 html, body, #root {
@@ -49,22 +73,42 @@ html, body, #root {
 body {
   background-color: var(--bg);
   color: var(--text);
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Noise texture overlay */
+/* Subtle ambient glow effect */
 body::before {
   content: '';
   position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(155, 27, 48, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(245, 197, 24, 0.04) 0%, transparent 50%);
   pointer-events: none;
-  z-index: 9999;
-  opacity: 0.4;
+  z-index: 0;
+  animation: ambientShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes ambientShift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-3%, 3%) rotate(3deg); }
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Selection */
+::selection {
+  background: rgba(245, 197, 24, 0.3);
+  color: #fff;
+}

@@ -11,6 +11,7 @@ interface EcobinState {
 }
 
 type Kategori = 'organik' | 'anorganik' | 'b3' | 'background' | 'standby'
+type Page = 'dashboard' | 'about'
 
 // ═══════════════════════════════════════════
 // HELPERS
@@ -56,22 +57,6 @@ const DESC_MAP: Record<Kategori, string> = {
 // SUB-COMPONENTS
 // ═══════════════════════════════════════════
 
-/** Indikator sudut — dekorasi HUD */
-function CornerBracket({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
-  const style: React.CSSProperties = {
-    position: 'absolute',
-    width: 16, height: 16,
-    borderColor: 'var(--border2)',
-    borderStyle: 'solid',
-    borderWidth: 0,
-    ...(pos === 'tl' && { top: 8, left: 8, borderTopWidth: 2, borderLeftWidth: 2 }),
-    ...(pos === 'tr' && { top: 8, right: 8, borderTopWidth: 2, borderRightWidth: 2 }),
-    ...(pos === 'bl' && { bottom: 8, left: 8, borderBottomWidth: 2, borderLeftWidth: 2 }),
-    ...(pos === 'br' && { bottom: 8, right: 8, borderBottomWidth: 2, borderRightWidth: 2 }),
-  }
-  return <span style={style} />
-}
-
 /** Ring animasi kategori */
 function CategoryRing({ kategori }: { kategori: Kategori }) {
   return (
@@ -86,20 +71,19 @@ function CategoryRing({ kategori }: { kategori: Kategori }) {
 function AccuracyBar({ skor, kategori }: { skor: string; kategori: Kategori }) {
   const pct = getSkorNumber(skor)
   return (
-    <div className="acc-wrap">
+    <div className="acc-card">
       <div className="acc-labels">
-        <span className="mono muted">AKURASI</span>
-        <span className={`mono acc-value acc-value--${kategori}`}>{skor}</span>
+        <span className="acc-label-text">Akurasi Deteksi</span>
+        <span className={`mono acc-value acc-value--${kategori}`} style={{ fontWeight: 700 }}>{skor}</span>
       </div>
       <div className="acc-track">
         <div
           className={`acc-fill acc-fill--${kategori}`}
           style={{ width: `${pct}%` }}
         />
-        {/* Threshold marker di 85% */}
         <div className="acc-threshold" style={{ left: '85%' }} title="Threshold 85%" />
       </div>
-      <div className="acc-sub mono muted">threshold deteksi: 85%</div>
+      <div className="acc-sub">Threshold deteksi: 85%</div>
     </div>
   )
 }
@@ -110,12 +94,8 @@ function Counter({ label, value, kategori }: {
 }) {
   return (
     <div className={`counter counter--${kategori}`}>
-      <CornerBracket pos="tl" />
-      <CornerBracket pos="tr" />
-      <CornerBracket pos="bl" />
-      <CornerBracket pos="br" />
       <span className={`counter__num counter__num--${kategori}`}>{value}</span>
-      <span className="counter__label mono">{label}</span>
+      <span className="counter__label">{label}</span>
     </div>
   )
 }
@@ -129,14 +109,105 @@ function DetectionLog({ log }: { log: string[] }) {
 
   return (
     <div className="log-panel">
-      <div className="panel-label mono muted">// LOG DETEKSI</div>
+      <div className="section-title">📋 Log Deteksi</div>
       <div className="log-scroll" ref={ref}>
         {log.length === 0 && (
-          <div className="log-empty mono muted">Menunggu deteksi pertama...</div>
+          <div className="log-empty">Menunggu deteksi pertama...</div>
         )}
         {log.map((entry, i) => (
-          <div key={i} className="log-entry mono">{entry}</div>
+          <div key={i} className="log-entry">{entry}</div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+/** About / Tentang EcoBin page */
+function AboutPage() {
+  return (
+    <div className="about-page">
+      <div className="about-hero">
+        <img src="/logo-smkn13.png" alt="Logo SMKN 13 Bandung" className="about-hero__logo" />
+        <h1 className="about-hero__title">Smart EcoBin</h1>
+        <p className="about-hero__desc">
+          Smart EcoBin adalah tempat sampah cerdas yang menggunakan teknologi 
+          <strong> Artificial Intelligence (AI) </strong> untuk mengklasifikasikan jenis sampah 
+          secara otomatis. Dikembangkan oleh siswa-siswi SMKN 13 Bandung sebagai 
+          solusi inovatif untuk pengelolaan sampah yang lebih baik.
+        </p>
+      </div>
+
+      <div className="about-grid">
+        <div className="about-card">
+          <span className="about-card__icon">🤖</span>
+          <h3 className="about-card__title">AI Classification</h3>
+          <p className="about-card__text">
+            Menggunakan model machine learning yang dilatih untuk mengenali 
+            dan mengklasifikasikan sampah ke dalam kategori Organik, Anorganik, dan B3 
+            secara real-time melalui kamera.
+          </p>
+        </div>
+
+        <div className="about-card">
+          <span className="about-card__icon">📷</span>
+          <h3 className="about-card__title">Computer Vision</h3>
+          <p className="about-card__text">
+            Memanfaatkan computer vision untuk mendeteksi objek sampah yang diarahkan 
+            ke kamera, kemudian menganalisis dan menentukan jenis sampahnya 
+            dengan tingkat akurasi tinggi.
+          </p>
+        </div>
+
+        <div className="about-card">
+          <span className="about-card__icon">⚡</span>
+          <h3 className="about-card__title">ESP32 IoT</h3>
+          <p className="about-card__text">
+            Terhubung dengan mikrokontroler ESP32 melalui WiFi untuk mengontrol 
+            mekanisme pembukaan tutup tempat sampah sesuai kategori yang terdeteksi 
+            secara otomatis.
+          </p>
+        </div>
+
+        <div className="about-card">
+          <span className="about-card__icon">🌱</span>
+          <h3 className="about-card__title">Eco-Friendly</h3>
+          <p className="about-card__text">
+            Mendukung program pengelolaan sampah berkelanjutan dengan membantu 
+            pemilahan sampah yang tepat, mengurangi kontaminasi, dan meningkatkan 
+            efisiensi daur ulang.
+          </p>
+        </div>
+
+        <div className="about-card">
+          <span className="about-card__icon">📊</span>
+          <h3 className="about-card__title">Dashboard Real-time</h3>
+          <p className="about-card__text">
+            Menyediakan dashboard monitoring real-time yang menampilkan feed kamera, 
+            hasil klasifikasi, tingkat akurasi, dan statistik jumlah sampah 
+            yang telah terdeteksi.
+          </p>
+        </div>
+
+        <div className="about-card">
+          <span className="about-card__icon">🏫</span>
+          <h3 className="about-card__title">SMKN 13 Bandung</h3>
+          <p className="about-card__text">
+            Proyek ini dikembangkan sebagai bagian dari pembelajaran dan inovasi 
+            di jurusan TKJ & RPL, SMKN 13 Bandung, menggabungkan ilmu teknologi 
+            dengan kepedulian lingkungan.
+          </p>
+        </div>
+      </div>
+
+      <div className="about-team">
+        <h3 className="about-team__title">🎓 Tentang Proyek</h3>
+        <p className="about-team__text">
+          Smart EcoBin merupakan proyek inovasi siswa SMKN 13 Bandung yang bertujuan 
+          untuk membantu pengelolaan sampah secara cerdas. Sistem ini menggunakan 
+          Flask sebagai backend, React untuk dashboard, dan ESP32 sebagai pengontrol 
+          perangkat keras.<br />
+          Dibuat dengan ❤️ oleh siswa-siswi SMKN 13 Bandung.
+        </p>
       </div>
     </div>
   )
@@ -153,6 +224,7 @@ export default function App() {
   const [log, setLog] = useState<string[]>([])
   const [connected, setConnected] = useState(false)
   const [tick, setTick] = useState(0)
+  const [page, setPage] = useState<Page>('dashboard')
   const prevObjek = useRef('-')
 
   // Poll /state tiap 400ms
@@ -196,111 +268,121 @@ export default function App() {
 
   return (
     <div className="layout">
-      {/* ── HEADER ── */}
-      <header className="header">
-        <div className="header__brand">
-          <div className="header__logo mono">
-            <span className="logo-bracket">[</span>
-            ECO
-            <span className="logo-green">BIN</span>
-            <span className="logo-bracket">]</span>
+      {/* ── NAVBAR ── */}
+      <nav className="navbar">
+        <div className="navbar__left">
+          <img src="/logo-smkn13.png" alt="Logo SMKN 13" className="navbar__logo-img" />
+          <div className="navbar__brand">
+            <div className="navbar__title">
+              Smart <span className="navbar__title-accent">EcoBin</span>
+            </div>
+            <div className="navbar__subtitle">SMKN 13 Bandung</div>
           </div>
-          <div className="header__sub mono muted">SMKN 13 BANDUNG · AI WASTE CLASSIFIER v1.0</div>
         </div>
 
-        <div className="header__indicators">
-          <div className={`indicator ${connected ? 'indicator--on' : 'indicator--off'}`}>
-            <span className="indicator__dot" />
-            <span className="mono">{connected ? 'LIVE' : 'OFFLINE'}</span>
-          </div>
-          <div className="indicator">
-            <span className="mono muted">FLASK :5000</span>
+        <div className="navbar__nav">
+          <button
+            className={`navbar__link ${page === 'dashboard' ? 'navbar__link--active' : ''}`}
+            onClick={() => setPage('dashboard')}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`navbar__link ${page === 'about' ? 'navbar__link--active' : ''}`}
+            onClick={() => setPage('about')}
+          >
+            Tentang EcoBin
+          </button>
+        </div>
+
+        <div className="navbar__right">
+          <div className={`navbar__status ${connected ? 'navbar__status--on' : 'navbar__status--off'}`}>
+            <span className="navbar__status-dot" />
+            <span>{connected ? 'Connected' : 'Offline'}</span>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* ── BODY ── */}
-      <main className="body">
+      {/* ── PAGE CONTENT ── */}
+      {page === 'about' ? (
+        <AboutPage />
+      ) : (
+        <main className="dashboard">
+          <div className="dashboard__grid">
 
-        {/* KIRI — KAMERA */}
-        <section className="cam-section">
-          <div className="cam-wrap">
-            <CornerBracket pos="tl" />
-            <CornerBracket pos="tr" />
-            <CornerBracket pos="bl" />
-            <CornerBracket pos="br" />
+            {/* KIRI — KAMERA */}
+            <section className="cam-section">
+              <div className="cam-card">
+                <div className="cam-card__header">
+                  <div className="cam-card__title">
+                    <span className={`cam-card__title-dot ${connected ? 'cam-card__title-dot--live' : ''}`} />
+                    Live Camera Feed
+                  </div>
+                  <span className={`cam-card__badge cam-card__badge--${kategori}`}>
+                    {LABEL_MAP[kategori]}
+                  </span>
+                </div>
+                <div className="cam-card__feed">
+                  <img
+                    src="/video_feed"
+                    alt="Camera Feed"
+                    className="cam-img"
+                  />
+                  {/* Scan line animasi */}
+                  <div className={`scan-line scan-line--${kategori} ${skorNum > 50 ? 'scan-line--active' : ''}`} />
+                </div>
+              </div>
 
-            <img
-              src="/video_feed"
-              alt="Camera Feed"
-              className="cam-img"
-            />
+              {/* Akurasi bar di bawah kamera */}
+              <AccuracyBar skor={state.skor} kategori={kategori} />
+            </section>
 
-            {/* HUD overlay atas */}
-            <div className="cam-hud cam-hud--top">
-              <span className="mono muted cam-hud__text">CAM · 640×480 · LIVE</span>
-              <span className={`mono cam-hud__kat cam-hud__kat--${kategori}`}>
-                {LABEL_MAP[kategori]}
-              </span>
-            </div>
+            {/* KANAN — INFO PANEL */}
+            <aside className="info-panel">
 
-            {/* Scan line animasi */}
-            <div className={`scan-line scan-line--${kategori} ${skorNum > 50 ? 'scan-line--active' : ''}`} />
+              {/* Status utama */}
+              <div className={`status-card status-card--${kategori}`}>
+                <div className="status-card__top">
+                  <span className="section-title">📌 Status Klasifikasi</span>
+                  <CategoryRing kategori={kategori} />
+                </div>
+
+                <div className={`status-card__label status-card__label--${kategori}`}>
+                  {LABEL_MAP[kategori]}
+                </div>
+                <div className="status-card__desc">
+                  {DESC_MAP[kategori]}
+                </div>
+              </div>
+
+              {/* Counter */}
+              <div className="counters-wrap">
+                <div className="section-title">📈 Total Sesi Ini</div>
+                <div className="counters-grid">
+                  <Counter label="ORGANIK"   value={counts.organik}   kategori="organik" />
+                  <Counter label="ANORGANIK" value={counts.anorganik} kategori="anorganik" />
+                  <Counter label="B3"        value={counts.b3}        kategori="b3" />
+                </div>
+              </div>
+
+              {/* Log */}
+              <DetectionLog log={log} />
+
+            </aside>
           </div>
-
-          {/* Akurasi bar di bawah kamera */}
-          <AccuracyBar skor={state.skor} kategori={kategori} />
-        </section>
-
-        {/* KANAN — INFO PANEL */}
-        <aside className="info-panel">
-
-          {/* Status utama */}
-          <div className={`status-card status-card--${kategori}`}>
-            <CornerBracket pos="tl" />
-            <CornerBracket pos="tr" />
-            <CornerBracket pos="bl" />
-            <CornerBracket pos="br" />
-
-            <div className="status-card__top">
-              <span className="mono muted panel-label">// STATUS</span>
-              <CategoryRing kategori={kategori} />
-            </div>
-
-            <div className={`status-card__label status-card__label--${kategori}`}>
-              {LABEL_MAP[kategori]}
-            </div>
-            <div className="status-card__desc mono muted">
-              {DESC_MAP[kategori]}
-            </div>
-          </div>
-
-          {/* Counter */}
-          <div className="counters-wrap">
-            <div className="panel-label mono muted">// TOTAL SESI INI</div>
-            <div className="counters-grid">
-              <Counter label="ORGANIK"   value={counts.organik}   kategori="organik" />
-              <Counter label="ANORGANIK" value={counts.anorganik} kategori="anorganik" />
-              <Counter label="B3"        value={counts.b3}        kategori="b3" />
-            </div>
-          </div>
-
-          {/* Log */}
-          <DetectionLog log={log} />
-
-        </aside>
-      </main>
+        </main>
+      )}
 
       {/* ── FOOTER ── */}
-      <footer className="footer mono muted">
-        <span>SMKN 13 BANDUNG</span>
+      <footer className="footer">
+        <span>SMKN 13 Bandung</span>
         <span className="footer__sep">·</span>
-        <span>AI SMART WASTE BIN</span>
+        <span>AI Smart Waste Bin</span>
         <span className="footer__sep">·</span>
-        <span>ESP32 VIA WIFI</span>
+        <span>ESP32 via WiFi</span>
         <span className="footer__sep">·</span>
-        <span className={connected ? 'text-green' : 'text-red'}>
-          {connected ? '● CONNECTED' : '● DISCONNECTED'}
+        <span style={{ color: connected ? 'var(--success)' : 'var(--danger)' }}>
+          {connected ? '● Connected' : '● Disconnected'}
         </span>
       </footer>
     </div>
